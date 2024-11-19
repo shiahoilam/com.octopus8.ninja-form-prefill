@@ -23,7 +23,7 @@ function set_userinfo_data($data)
         unset($_SESSION['singpass_userinfo'], $_SESSION['singpass_userinfo_expiration']);
         $_SESSION['singpass_userinfo'] = [
             'uinfin' => $decoded_data['uinfin']['value'],
-            'date_of_birth' => $decoded_data['dob']['value'] ?? '',
+            // 'date_of_birth' => $decoded_data['dob']['value'] ?? '',
             'email' => $decoded_data['email']['value'] ?? '',
             'mobile_no' => $decoded_data['mobileno']['prefix']['value'] . $decoded_data['mobileno']['areacode']['value'] . $decoded_data['mobileno']['nbr']['value'],
             'full_name' => $decoded_data['name']['value'] ?? '',
@@ -50,6 +50,7 @@ function set_userinfo_data($data)
                     (isset($decoded_data['regadd']['line2']['value']) ? $decoded_data['regadd']['line2']['value'] : '')
                 ),
             // 'sex' => $decoded_data['sex']['code'],
+            'postal_code' => $decoded_data['regadd']['postal']['value'] ?? '',
         ];
         $_SESSION['singpass_userinfo_expiration'] = time() + 60;
     }
@@ -80,8 +81,8 @@ function singpass_button_pressed()
         error_log("E: " . $isExpired);
         if (!$isExpired) {
             $prefill_data = [
-                'uinfin'=>$singpass_userinfo['uinfin'],
-                'date_of_birth'=>$singpass_userinfo['date_of_birth'],
+                'uinfin' => $singpass_userinfo['uinfin'],
+                // 'date_of_birth' => $singpass_userinfo['date_of_birth'],
                 'email' => $singpass_userinfo['email'],
                 'mobile_no' => $singpass_userinfo['mobile_no'],
                 'full_name' => $singpass_userinfo['full_name'],
@@ -89,6 +90,7 @@ function singpass_button_pressed()
                 // 'race' => $singpass_userinfo['race'],
                 'address' => $singpass_userinfo['address'],
                 // 'sex' => $singpass_userinfo['sex'],
+                'postal_code' => $singpass_userinfo['postal_code'],
             ];
 
             // Log the prefill data for debugging
