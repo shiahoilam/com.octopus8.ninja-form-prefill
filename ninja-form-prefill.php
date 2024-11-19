@@ -23,7 +23,7 @@ function set_userinfo_data($data)
         unset($_SESSION['singpass_userinfo'], $_SESSION['singpass_userinfo_expiration']);
         $_SESSION['singpass_userinfo'] = [
             'uinfin' => $decoded_data['uinfin']['value'],
-            // 'date_of_birth' => $decoded_data['dob']['value'] ?? '',
+            'date_of_birth' => $decoded_data['dob']['value'] ?? '',
             'email' => $decoded_data['email']['value'] ?? '',
             'mobile_no' => $decoded_data['mobileno']['prefix']['value'] . $decoded_data['mobileno']['areacode']['value'] . $decoded_data['mobileno']['nbr']['value'],
             'full_name' => $decoded_data['name']['value'] ?? '',
@@ -82,7 +82,7 @@ function singpass_button_pressed()
         if (!$isExpired) {
             $prefill_data = [
                 'uinfin' => $singpass_userinfo['uinfin'],
-                // 'date_of_birth' => $singpass_userinfo['date_of_birth'],
+                'date_of_birth' => $singpass_userinfo['date_of_birth'],
                 'email' => $singpass_userinfo['email'],
                 'mobile_no' => $singpass_userinfo['mobile_no'],
                 'full_name' => $singpass_userinfo['full_name'],
