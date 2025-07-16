@@ -57,17 +57,17 @@ function set_userinfo_data($data)
                     (isset($decoded_data['regadd']['block']['value']) ? $decoded_data['regadd']['block']['value'] . ' ' : '') .
                     (isset($decoded_data['regadd']['street']['value']) ? $decoded_data['regadd']['street']['value'] . ' ' : '') .
                         // Validate floor number and convert to two-digit format (01, 02, etc.)
-                    (isset($decoded_data['regadd']['floor']['value'], $decoded_data['regadd']['unit']['value']) &&
-                        preg_match('/^\d{1,2}$/', $decoded_data['regadd']['floor']['value'])
-                        ? '#' . str_pad($decoded_data['regadd']['floor']['value'], 2, '0', STR_PAD_LEFT) . '-' . $decoded_data['regadd']['unit']['value'] . ' '
-                        : ''
-                    ) .
+                    // (isset($decoded_data['regadd']['floor']['value'], $decoded_data['regadd']['unit']['value']) &&
+                    //     preg_match('/^\d{1,2}$/', $decoded_data['regadd']['floor']['value'])
+                    //     ? '#' . str_pad($decoded_data['regadd']['floor']['value'], 2, '0', STR_PAD_LEFT) . '-' . $decoded_data['regadd']['unit']['value'] . ' '
+                    //     : ''
+                    // ) .
                     (isset($decoded_data['regadd']['building']['value']) && !empty(trim($decoded_data['regadd']['building']['value']))
                         ? $decoded_data['regadd']['building']['value'] . ' '
                         : ''
-                    ) .
-                    'Singapore ' .
-                    (isset($decoded_data['regadd']['postal']['value']) ? $decoded_data['regadd']['postal']['value'] : '')
+                    )
+                    // 'Singapore ' .
+                    // (isset($decoded_data['regadd']['postal']['value']) ? $decoded_data['regadd']['postal']['value'] : '')
                 )
                 // Building the non-Singapore address format
                 : trim(
@@ -77,6 +77,11 @@ function set_userinfo_data($data)
 
             // 'sex' => $decoded_data['sex']['code'],
             'postal_code' => $decoded_data['regadd']['postal']['value'] ?? '',
+            'floor_unit_no' =>  (isset($decoded_data['regadd']['floor']['value'], $decoded_data['regadd']['unit']['value']) &&
+                        preg_match('/^\d{1,2}$/', $decoded_data['regadd']['floor']['value'])
+                        ? '#' . str_pad($decoded_data['regadd']['floor']['value'], 2, '0', STR_PAD_LEFT) . '-' . $decoded_data['regadd']['unit']['value'] . ' '
+                        : ''
+                    ),
         ];
         $_SESSION['singpass_userinfo_expiration'] = time() + 60;
 
@@ -106,7 +111,10 @@ function singpass_button_pressed()
         if (!$isExpired) {
             $prefill_data = [
                 'uinfin' => $singpass_userinfo['uinfin'],
-                'date_of_birth' => $singpass_userinfo['date_of_birth'],
+                // 'date_of_birth' => $singpass_userinfo['date_of_birth'],
+                'date_of_birth' => (!empty($singpass_userinfo['date_of_birth']) && DateTime::createFromFormat('Y-m-d', $singpass_userinfo['date_of_birth']))
+                    ? DateTime::createFromFormat('Y-m-d', $singpass_userinfo['date_of_birth'])->format('d-m-Y')
+                    : '',
                 'email' => $singpass_userinfo['email'],
                 'mobile_no' => $singpass_userinfo['mobile_no'],
                 'full_name' => $singpass_userinfo['full_name'],
@@ -115,6 +123,7 @@ function singpass_button_pressed()
                 'address' => $singpass_userinfo['address'],
                 // 'sex' => $singpass_userinfo['sex'],
                 'postal_code' => $singpass_userinfo['postal_code'],
+                'floor_unit_no' => $singpass_userinfo['floor_unit_no'],
             ];
 
             // Send prefill data back as the AJAX response
